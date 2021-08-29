@@ -1,4 +1,6 @@
-# Experimental composable for gqty
+# vue-gqty
+
+Experimental composable for gqty
 
 ## Introduction
 
