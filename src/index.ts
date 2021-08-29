@@ -110,6 +110,9 @@ export function useQuery<GeneratedSchema extends {
     try {
       prepare(prepareHelpers)
     } catch (err) {
+      // if (err instanceof Error && Error.captureStackTrace!) {
+      //     Error.captureStackTrace(err, useQuery);
+      // }
       throw err
     }
   }
