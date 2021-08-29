@@ -31,7 +31,7 @@
   "peerDependencies": {
     "@vue/composition-api": "^1.1.0",
     "gqty": "^1.0.3",
-    "vue": "^2.6.14 || ^3.0.0"
+    "vue": "^2.6.14 || ^3.0.11"
   },
   "peerDependenciesMeta": {
     "@vue/composition-api": {
