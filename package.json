@@ -1,5 +1,6 @@
 {
   "name": "vue-gqty",
+  "description": "Experimental Vue composable for gqty",
   "version": "0.0.1",
   "license": "MIT",
   "main": "./dist/vue-gqty.umd.js",
