@@ -25,7 +25,7 @@ function hasEnabledStaleWhileRevalidate(
       : true;
 }
 
-export function useSubscribeCacheChanges({
+function useSubscribeCacheChanges({
   hookSelections,
   eventHandler,
   onChange,
@@ -63,4 +63,89 @@ const unsubscribeCache = eventHandler.onCacheChangeSubscribe(
           unsubscribeCache()
       }
   })
+}
+
+interface Schema {
+  query: object;
+  mutation: object;
+  subscription: object;
+}
+
+export function useQuery<GeneratedSchema extends Schema>(client: GQtyClient<GeneratedSchema>, {
+  onError,
+  staleWhileRevalidate = false
+}: {
+  onError?: OnErrorHandler | undefined,
+  staleWhileRevalidate?: boolean
+}) {
+  const fetchingPromise =  ref<Promise<void> | null>(null)
+  const query = shallowRef(client.query)
+  const hookSelections = ref(new Set<Selection>())
+  const enabledStaleWhileRevalidate = hasEnabledStaleWhileRevalidate(staleWhileRevalidate);
+  const cacheRefetchSelections = enabledStaleWhileRevalidate ? new Set<Selection>() : null;
+
+  const { eventHandler, scheduler, interceptorManager } = client
+
+  const { createInterceptor, globalInterceptor, removeInterceptor } = interceptorManager
+  const interceptor = createInterceptor();
+
+  interceptor.selectionCacheRefetchListeners.add((selection) => {
+    if (cacheRefetchSelections) cacheRefetchSelections.add(selection);
+
+    hookSelections.value.add(selection);
+  });
+
+  if (enabledStaleWhileRevalidate && cacheRefetchSelections?.size) {
+    for (const selection of cacheRefetchSelections) {
+      globalInterceptor.addSelectionCacheRefetch(selection);
+    }
+  }
+
+  interceptor.selectionAddListeners.add((selection) => {
+    hookSelections.value.add(selection);
+  });
+
+  interceptor.selectionCacheListeners.add((selection) => {
+    hookSelections.value.add(selection);
+  });
+
+  const unsubscribeResolve = scheduler.subscribeResolve((promise, selection) => {
+    if (fetchingPromise.value === null && hookSelections.value.has(selection)) {
+      const newPromise = new Promise<void>((resolve) => {
+        promise.then(({ error }) => {
+          fetchingPromise.value = null
+          if (error && onError) onError(error)
+
+          Promise.resolve().then(() => triggerRef(query))
+          resolve()
+        })
+      })
+      fetchingPromise.value = newPromise
+    }
+  })
+
+  useSubscribeCacheChanges({
+    hookSelections,
+    eventHandler,
+    onChange() {
+      if (!fetchingPromise.value) {
+        triggerRef(query)
+      }
+    }
+  })
+
+  const isLoading = computed(() => fetchingPromise.value !== null)
+
+  onUnmounted(() => {
+    const instance = getCurrentInstance() 
+    if (instance) {
+      unsubscribeResolve()
+      removeInterceptor(interceptor)
+    }
+  })
+
+  return {
+    query,
+    isLoading
+  }
 }
