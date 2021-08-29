@@ -1,0 +1,46 @@
+{
+  "name": "vue-gqty",
+  "version": "0.0.3",
+  "license": "MIT",
+  "main": "./dist/vue-gqty.umd.js",
+  "module": "./dist/vue-gqty.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-gqty.es.js",
+      "require": "./dist/vue-gqty.umd.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "build:watch": "yarn build --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.5",
+    "typescript": "^4.3.2",
+    "vite": "^2.5.1",
+    "vite-plugin-dts": "^0.7.0",
+    "vue": "3.0.11"
+  },
+  "dependencies": {
+    "vue-demi": "^0.11.3"
+  },
+  "peerDependencies": {
+    "@vue/composition-api": "^1.1.0",
+    "gqty": "^1.0.3",
+    "vue": "^2.6.14 || ^3.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wobsoriano/vue-gqty.git"
+  },
+  "sideEffects": true
+}
