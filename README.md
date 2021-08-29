@@ -1,5 +1,8 @@
 # vue-gqty
 
+[![npm version](https://badge.fury.io/js/vue-gqty.svg)](https://badge.fury.io/js/vue-gqty)
+[![bundle size](https://badgen.net/bundlephobia/minzip/vue-gqty)](https://bundlephobia.com/result?p=vue-gqty)
+
 Experimental composable for gqty
 
 ## Introduction
