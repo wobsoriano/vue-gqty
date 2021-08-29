@@ -30,20 +30,20 @@ yarn add vue-gqty gqty @vue/composition-api
 
 ```html
 <template>
-    <p v-if="isLoading">Loading...</p>
-    <div v-else>
-        <p v-for="user in query.users" :key="user.id">
-            Name: {{ user.name }}
-            <br />
-            Dogs:
-            <br />
-            <ul>
-               <li v-for="dog in user.dogs" :key="dog.name">
-                   {{ dog.name }}
-               </li> 
-            </ul>
-        </p>
-    </div>
+  <p v-if="isLoading">Loading...</p>
+  <div v-else>
+    <p v-for="user in query.users" :key="user.id">
+    Name: {{ user.name }}
+    <br />
+    Dogs:
+    <br />
+    <ul>
+      <li v-for="dog in user.dogs" :key="dog.name">
+        {{ dog.name }}
+      </li> 
+    </ul>
+    </p>
+  </div>
 </template>
 
 <script setup lang="ts">
