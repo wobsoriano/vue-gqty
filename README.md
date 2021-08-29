@@ -30,28 +30,35 @@ yarn add vue-gqty gqty @vue/composition-api
 
 ```html
 <template>
-  <LiteYouTubeEmbed 
-    id="dQw4w9WgXcQ"
-    title="Rick Astley - Never Gonna Give You Up (Official Music Video)"
-  />
+    <p v-if="isLoading">Loading...</p>
+    <div v-else>
+        <p v-for="user in query.users" :key="user.id">
+            Name: {{ user.name }}
+            <br />
+            Dogs:
+            <br />
+            <ul>
+               <li v-for="dog in user.dogs" :key="dog.name">
+                   {{ dog.name }}
+               </li> 
+            </ul>
+        </p>
+    </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
-import LiteYouTubeEmbed from 'vue-lite-youtube-embed'
-import 'vue-lite-youtube-embed/dist/style.css'
+<script setup lang="ts">
+import { client } from './gqty'
+import { useQuery } from './useQuery'
 
-export default defineComponent({
-    components: { LiteYouTubeEmbed }
+const { query, isLoading } = useQuery(client, {
+    prepare({ prepass, query }) {
+        prepass(query.users, 'id', 'name', 'dogs.name')
+    },
+    onError(err) {},
+    staleWhileRevalidate: true,
 })
 </script>
 ```
-
-## Credits
-
-- [react-lite-youtube-embed](https://github.com/ibrahimcesar/react-lite-youtube-embed) - A private by default, faster and cleaner YouTube embed component for React applications.
-- [vue-demi](https://github.com/vueuse/vue-demi/) - Creates Universal Library for Vue 2 & 3.
-- [lite-youtube-embed](https://github.com/paulirish/lite-youtube-embed) - A faster youtube embed.
 
 ## License
 
